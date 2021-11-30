@@ -104,7 +104,7 @@ while 1:
 
 	else:
 		dist_front_golden_token = find_front_golden_token()
-    if dist_front_golden_token lesser than dist_front_thr:
+		if dist_front_golden_token lesser than dist_front_thr:
 			detected golden tokens
 			choose_turn()
 			if anti_clockwise return 1
