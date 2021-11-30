@@ -1,124 +1,17 @@
-*** This file contains the pseudocode for the assignment1.py file ***
-
-d_thr = DISTANCE TO GRAB THE TOKEN  
-d_thr2 = THE ROBOT IS CLOSE ENOUGH TO THE SILVER TOKEN 
-d_front_thr = THE ROBOT CLOSE ENOUGH TO THE GOLDEN TOKEN
-angle_thr = ANGLE TO GRAB THE TOKEN
-
-R=Robot() ## Instance of the class Robot ##
-
-def drive(speed, seconds): ## function for setting a linear velocity for the robot to drive forward##
-    R.motors[0].m0.power = speed ## speed of the wheels##
-    R.motors[0].m1.power = speed
-    time.sleep(seconds) ## the time interval##
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
-
-def turn(speed, seconds): 
-    ## function for setting an angular velocity for the robot to turn ##
-    R.motors[0].m0.power = speed ## speed of the wheel##
-    R.motors[0].m1.power = -speed
-    time.sleep(seconds) ## the time interval##
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
-
-
-def find_silver_token(): ## FUNCTION TO FIND THE SILVER TOKEN ##
-    dist=100
-    for token in R.see():
-        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_SILVER:
-            dist = token.dist
-            rot_y = token.rot_y
-    if dist==100:
-        return -1,-1
-    else:
-        return dist,rot_y 
-
-def find_golden_token():## function to find the golden token ##
-    dist=100
-    for token in R.see():
-        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD:
-            dist=token.dist
-            rot_y=token.rot_y
-    if dist==100:
-        return -1,-1
-    else:
-        return dist,rot_y
-
-def find_front_golden_token(): ## function to find the front golden token ##
-	dist=100
-	for token in R.see():
-		if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and -20 < token.rot_y < 20:
-			dist=token.dist
-			rot_y=token.rot_y
-	if dist==100:
-		return -1, -1
-	else:
-		return dist, rot_y
-
-def find_right_golden_token(): ## function to find the right golden token ##
-	dist=100
-	for token in R.see():
-		if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and 70 < token.rot_y < 110:
-			dist=token.dist
-			rot_y=token.rot_y
-	if dist==100:
-		return -1, -1
-	else:
-		return dist, rot_y
-
-
-def find_left_golden_token(): ## function to find the left golden token ##
-	dist=100
-	for token in R.see():
-		if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and -110< token.rot_y < -70:
-			dist=token.dist
-			rot_y=token.rot_y
-	if dist==100:
-		return -1, -1
-	else:
-		return dist, rot_y
-
-def choose_turn(): ## function to choose which side the robot should turn##
-    distance_from_left = find_left_golden_token()
-    distance_from_right = find_right_golden_token()
-    if distance_from_right < distance_from_left:
-        return 1
-    else:
-        return 0
-
-while 1:
-	dist_silver_token, angle_silver_token = find_silver_token() ## passing parameters to the function to find the silver token##
-	if dist_silver_token LESS THAN dist_thr AND abs(angle_silver_token) LESS THAN angle_thr:
-		Grab
-		Turn
-		Release
-		Turn (opposite direction)
-	else if dist_silver_token LESS THAN dist_thr2:
-		if angle_silver_token > angle_thr:
-			alligning left 
-		else if angle_silver_token < - angle_thr:
-			alligning right
-		else: 
-			drive forward
-
-	else:
-		dist_front_golden_token = find_front_golden_token()
-		if dist_front_golden_token lesser than dist_front_thr:
-			detected golden tokens
-			choose_turn()
-			if anti_clockwise return 1
-				rotate anticlockwise   
-			else:
-				rotate clockwise   
-
-	
-******** how to run the code *************
-
-1.open terminal from the assignment1.py located directory 
-2. type - python run.py assignment1.py
-
-
-	
-
-
+# TURTLEBOT CONTROLLER ASSIGNMENT-1
+### AIM
+Assignment-1 is a python script for achieving the given robot's behaviour by driving around the given circuit in the counter-clockwise direction. It has to avoid touching the golden tokens and when close to silver token, it should grab it, move it behind itself and continue on its course of path.
+### METHODOLOGY OF THE ROBOT 
+###### 1. Robot drives :
+Firstly in order to move the robot forward a function called ***DRIVE()*** has been defined. This function has two motors to activate mo and m1. when a set of values is given to the motors, the robot moves forward if it is (+), else drives backward for (-).
+###### 2. Robot Turns:
+Secondly to turn the robot a fucntion called ***TURN()*** has been defined. This Function is used to turn the robot's motors mo and m1 assigning same amount of speed to both the motors but each diferent in direction to each other to turn the robot.
+###### 3.Robot commands: 
+In order for the robot to see, grab and release no fucntions are needed. Instead the commands can be used as : R.see(), R.grab(), R.release() for the said tasks to happen.
+NOTE - R is the robot() which defines those functionalities in the Robot() folder.
+###### 4.Silver Token recognision:
+A function ***find_silver_token*** is created with variables, d_silver_token = distance from the silver token to robot, angle_silver_token = postion of the silver token oriented with respect to the robot. If the token.dist returns d_silver_token and token.rot_y returns angle_silver_token then the token is silver. if the d_silver_token less than threshold distance( minimum distance assigned for the robot grab silver token) and absolute angle of angle_silver_token less than angle_thr (angle to allign the robot with the silver token to grab) is both satisfied the robot will grab the silver token, turn and place it behind itself and turns again. A second threshold distance is created to allign the robot with the silver token. If Second threshold distance (d_thr2) is greater than d_silver_token then it allign itself with silver token respect to the angle_silver_token and angle_thr condtions.
+###### 5.Golden token recognision:
+As the robot should avoid the golden token, four functions are created naming ***find_left_golden_token()***, ***find_right_golden_token()***, ***find_front_golden_token()*** and ***find_golden_token()*** . These functions are created with respective parameters such as : distance of the robot from the respective golden token(front, left and right) and angle fo the robot with respect to the respective golden token (front, left, right).If the distance from the front golden token is lesser than the d_front_thr ( minimum distance from which the robot should avoid the golden tokens), robot should prioritise which side it should turn.For that decision making, a fucntion ***chosse_turn()*** is called. If distance from robot to right golden token is lesser than distance from robot to left golden token then the robot should turn left or else turn right. In front, left, right golden token functions respective range of angles are given for orientation of the robot to visualise the golden token and avoid them.
+### RESULT
+Code is in assignment1.py and can be run using ***python run.py assignment 1.py.*** Robot follows the path specified in the environment
